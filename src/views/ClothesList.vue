@@ -1,17 +1,22 @@
 <template style="height: 100%">
   <div style="height: 100%">
-    <a-page-header title="服装列表" @back="() => this.$router.push('/')" style="background-color: #389FD6;"/>
+    <a-page-header title="服装列表" @back="() => $router.push('/')" :ghost="false"/>
+    <a-icon type="plus" style="position: absolute;right: 40px;top: 25px;cursor: pointer" @click="addClothes()"/>
     <div class="box">
-      <a-row :gutter="8" align="middle" class="row" v-for="item in clothesList">
-        <a-col class="gutter-row" :span="8">
+      <a-row :gutter="10" align="middle" class="row">
+        <a-col class="gutter-row" :span="12" v-for="item in clothesList" :key="item.id">
           <div class="gutter-box">
             <a-card class="card" hoverable>
-              <img slot="cover" :src="item.goodsImg"/>
+              <img slot="cover" alt="example" :src="getGoodsImg(item.goodsImg)"/>
+              <template slot="actions" class="ant-card-actions">
+                <a-icon key="setting" type="setting" @click="edit(item)"/>
+                <a-icon key="ellipsis" type="delete" @click="del(item)"/>
+              </template>
+              <a-card-meta :title="item.name" :description="item.desc" style="height: 60px"></a-card-meta>
             </a-card>
           </div>
         </a-col>
       </a-row>
-
     </div>
   </div>
 
@@ -20,38 +25,67 @@
 <script>
 
 
+import mapper from '@/api/clothes'
+
 export default {
   data () {
     return {
-      clothesList: [
-        {
-          category: 1,
-          goodsName: '白糖玫瑰39℃防晒衣',
-          clothesLen: 70,
-          shoulderWidth: 57.5,
-          bust: 130,
-          sleeveLen: 60,
-          goodsImg: require('../assets/clothes/img1.jpg')
-        }
-      ],
-      clothesInfo: {
-        // 服装类别 1外套 2上衣 3裤子
-        category: 0,
-        // 商品名
-        goodsName: '',
-        // 尺码
-        size: 'L',
-        // 衣长
-        clothesLen: '',
-        // 肩宽
-        shoulderWidth: '',
-        // 胸围
-        bust: '',
-        // 袖长
-        sleeveLen: '',
-        // 商品图片
-        goodsImg: '',
+      peopleId: null,
+      clothesList: []
+    }
+  },
+  created () {
+    this.peopleId = this.$route.query.peopleId
+    if (!this.peopleId) {
+      this.$router.push('/')
+    }
+    this.listClothes()
+  },
+  methods: {
+    listClothes () {
+      mapper.findAll(this.peopleId, result => {
+        this.clothesList = result
+      })
+    },
+    getGoodsImg (img) {
+      if (!img || img === '') {
+        return require('../assets/clothes/loading.png')
       }
+      return img
+    },
+    addClothes () {
+      this.$router.push({
+        path: '/clothesDetail',
+        query: {
+          peopleId: this.peopleId
+        }
+      })
+    },
+    edit (item) {
+      this.$router.push({
+        path: '/clothesDetail',
+        query: {
+          peopleId: this.peopleId,
+          id: item.id
+        }
+      })
+    },
+    del (info) {
+      const _this_ = this
+      this.$confirm({
+        title: '确定删除“' + info.name + '”的尺码信息吗？',
+        okText: '是',
+        cancelText: '否',
+        onOk () {
+          mapper.delete(info.id)
+          _this_.clothesList.forEach(function (item, index, array) {
+            if (item.id === info.id) {
+              _this_.$message.success('删除成功')
+              _this_.clothesList.splice(index, 1)
+            }
+          })
+        }
+      })
     }
   }
 }
@@ -61,22 +95,30 @@ export default {
 <style scoped>
 .box {
   padding: 5px;
-  height: 497px;
-  background-color: #F5F5F5;
+  height: 90%;
+  /*background-color: #F5F5F5;*/
 }
 
 .card {
-  padding: 5px;
+  /*padding: 5px;*/
   border-radius: 5%;
   overflow: hidden;
   background-color: #FFF;
+
 }
 
 .card img {
-  border-radius: 5%;
+  /*border-radius: 5%;*/
 }
 
 .gutter-row {
   margin-top: 5px;
 }
+
+.extra {
+  display: inline;
+  padding-top: 12px;
+  float: right;
+}
+
 </style>

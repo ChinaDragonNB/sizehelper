@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import PeopleDetail from '../views/PeopleDetail.vue'
 import ClothesList from '../views/ClothesList.vue'
+import ClothesDetail from '../views/ClothesDetail.vue'
 
 Vue.use(VueRouter)
 
@@ -19,6 +20,10 @@ const routes = [
     path: '/clothes',
     name: 'ClothesList',
     component: ClothesList
+  }, {
+    path: '/clothesDetail',
+    name: 'ClothesDetail',
+    component: ClothesDetail
   },
 ]
 

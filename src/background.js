@@ -4,6 +4,7 @@ import { app, protocol, BrowserWindow, Menu } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 
+
 Menu.setApplicationMenu(null)
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -19,10 +20,11 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 async function createWindow () {
+
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 400,
-    height: 600,
+    width: 420,
+    height: 650,
     webPreferences: {
 
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -35,7 +37,7 @@ async function createWindow () {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    // if (!process.env.IS_TEST) win.webContents.openDevTools()
+    if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
@@ -53,6 +55,7 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
+
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -62,14 +65,14 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-  // if (isDevelopment && !process.env.IS_TEST) {
-  //   // Install Vue Devtools
-  //   try {
-  //     await installExtension(VUEJS_DEVTOOLS)
-  //   } catch (e) {
-  //     console.error('Vue Devtools failed to install:', e.toString())
-  //   }
-  // }
+  if (isDevelopment && !process.env.IS_TEST) {
+    // Install Vue Devtools
+    try {
+      await installExtension(VUEJS_DEVTOOLS)
+    } catch (e) {
+      console.error('Vue Devtools failed to install:', e.toString())
+    }
+  }
   createWindow()
 })
 
