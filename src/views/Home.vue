@@ -7,7 +7,7 @@
       <a-list item-layout="horizontal" :data-source="peoples">
         <a-list-item slot="renderItem" slot-scope="item, index">
           <a slot="actions">
-            <a-dropdown :trigger="['click']">
+            <a-dropdown>
               <a class="ant-dropdown-link" @click="e => e.preventDefault()">
                 <a-icon type="down"/>
               </a>

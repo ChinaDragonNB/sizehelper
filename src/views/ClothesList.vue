@@ -12,7 +12,7 @@
                 <a-icon key="setting" type="setting" @click="edit(item)"/>
                 <a-icon key="ellipsis" type="delete" @click="del(item)"/>
               </template>
-              <a-card-meta :title="item.name" :description="item.desc" style="height: 60px"></a-card-meta>
+              <a-card-meta :title="item.name" :description="item.desc" style="height: 50px"></a-card-meta>
             </a-card>
           </div>
         </a-col>

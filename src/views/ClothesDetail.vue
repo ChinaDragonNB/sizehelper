@@ -73,7 +73,7 @@
           <a-input v-model="clothesInfo.desc" type="textarea" style="width: 90%"/>
         </a-form-model-item>
         <a-form-model-item label="商品图片">
-          <a-upload name="avatar" list-type="picture-card" class="avatar-uploader" :show-upload-list="false" :customRequest="customRequest">
+          <a-upload name="avatar" list-type="picture-card" class="avatar-uploader" :show-upload-list="false" :customRequest="customRequest" :beforeUpload="beforeUpload">
             <img v-if="clothesInfo.goodsImg" :src="clothesInfo.goodsImg" alt="avatar" width="104" height="104"/>
             <div v-else>
               <a-icon type="plus"/>
@@ -187,6 +187,12 @@ export default {
       }
       this.$message.success('保存成功')
       this.back()
+    },
+    beforeUpload (file, fileList) {
+      if (!file.type.startsWith('image/')) {
+        this.$message.error('请上传图片')
+        return false
+      }
     },
     customRequest (info) {
       const reader = new FileReader()
