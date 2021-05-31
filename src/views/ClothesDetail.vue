@@ -73,8 +73,8 @@
           <a-input v-model="clothesInfo.desc" type="textarea" style="width: 90%"/>
         </a-form-model-item>
         <a-form-model-item label="商品图片">
-          <a-upload name="avatar" list-type="picture-card" class="avatar-uploader" :show-upload-list="false" action="https://www.mocky.io/v2/5cc8019d300000980a055e76">
-            <img v-if="clothesInfo.goodsImg" :src="getImg()" alt="avatar" width="104" height="104"/>
+          <a-upload name="avatar" list-type="picture-card" class="avatar-uploader" :show-upload-list="false" :customRequest="customRequest">
+            <img v-if="clothesInfo.goodsImg" :src="clothesInfo.goodsImg" alt="avatar" width="104" height="104"/>
             <div v-else>
               <a-icon type="plus"/>
               <div class="ant-upload-text">上传</div>
@@ -154,9 +154,6 @@ export default {
         query: { peopleId: this.clothesInfo.peopleId }
       })
     },
-    getImg () {
-      return require('@/assets/clothes/' + this.clothesInfo.goodsImg)
-    },
     info (id) {
       mapper.findById(id, result => {
         this.clothesInfo = result
@@ -190,6 +187,18 @@ export default {
       }
       this.$message.success('保存成功')
       this.back()
+    },
+    customRequest (info) {
+      const reader = new FileReader()
+      reader.readAsDataURL(info.file)
+      reader.onload = () => {
+        this.clothesInfo.goodsImg = reader.result
+        this.$message.success('上传成功')
+      }
+      reader.onerror = function (error) {
+        this.$message.success('上传失败')
+      }
+
     },
   },
 }
