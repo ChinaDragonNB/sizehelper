@@ -3,13 +3,21 @@ import indexedDB from '@/indexedDB'
 export default {
   tableName: 'clothes',
   findAll (peopleId, callback) {
-    indexedDB.findAll(this.tableName, function (result) {
+    let DB
+    indexedDB.openDB(DB, db => {
+      DB = db
+      const objectStore = DB.transaction(this.tableName).objectStore(this.tableName)
       const list = []
-      result.forEach(function (value, index, arr) {
-        if (value.peopleId === peopleId) {
-          list.push(value)
+      objectStore.openCursor().onsuccess = event => {
+        const cursor = event.target.result
+        if (cursor) {
+          if (cursor.value.peopleId == peopleId) {
+            cursor.value.id = cursor.key
+            list.push(cursor.value)
+          }
+          cursor.continue()
         }
-      })
+      }
       if (callback && (typeof callback === 'function')) {
         callback(list)
       }
@@ -25,6 +33,6 @@ export default {
     indexedDB.update(this.tableName, key, data)
   },
   delete (key) {
-    lindexedDB.delete(this.tableName, key)
+    indexedDB.delete(this.tableName, key)
   }
 }

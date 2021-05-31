@@ -30,6 +30,7 @@ export default {
   findAll (tableName, callback) {
     let DB
     this.openDB(DB, db => {
+      DB = db
       const objectStore = DB.transaction(tableName).objectStore(tableName)
       const list = []
       objectStore.openCursor().onsuccess = event => {
@@ -67,7 +68,7 @@ export default {
     this.openDB(DB, db => {
       DB = db
       const objectStore = DB.transaction(tableName, 'readwrite').objectStore(tableName)
-      const request = store.add(data)
+      const request = objectStore.add(data)
       request.onerror = function () {
         console.error('插入数据报错')
       }
@@ -101,7 +102,6 @@ export default {
       }
       request.onsuccess = event => {
       }
-
     })
   }
 
