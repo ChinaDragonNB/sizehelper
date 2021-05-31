@@ -23,7 +23,7 @@ async function createWindow () {
   // Create the browser window.
   const win = new BrowserWindow({
     title: '尺码助手',
-    width: 1020,
+    width: 420,
     height: 720,
     center: true,
     resizable: false,
